@@ -1,0 +1,23 @@
+Spring:
+  Application:
+    Name: Api-de-Autenticacao
+
+  Datasource:
+    Url: ${url_bd}
+    Username: ${user_bd}
+    Password: ${senha_bd}
+    Driver-class-name: com.mysql.cj.jdbc.Driver
+
+  Jpa:
+    Properties:
+      Hibernate:
+        Dialect: org.hibernate.dialect.MySQLDialect
+    Defer-datasource-initialization: true
+    Show-sql: true
+    Hibernate:
+      Ddl-auto: update
+
+Server:
+  Error:
+    Include-message: always
+    Include-binding-errors: always
