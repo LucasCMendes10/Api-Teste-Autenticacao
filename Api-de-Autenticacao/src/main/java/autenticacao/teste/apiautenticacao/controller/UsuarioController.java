@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +42,23 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(usuarios.stream()
                 .map(usuarioMapper::toResponseDto)
                 .toList());
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<UsuarioResponseDto> login(@RequestParam String email, @RequestParam String senha) {
+
+        Usuario usuario = usuarioService.buscarPorEmail(email);
+
+        if (Objects.isNull(usuario)) {
+            return ResponseEntity.status(404).build();
+        }
+
+        boolean senhaValida = usuario.getSenha().equals(senha);
+
+        if (!senhaValida) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.status(200).body(usuarioMapper.toResponseDto(usuario));
     }
 }
