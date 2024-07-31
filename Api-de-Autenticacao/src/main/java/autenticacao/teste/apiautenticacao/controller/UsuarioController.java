@@ -32,7 +32,13 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDto>> listarUsuarios() {
 
-        return ResponseEntity.status(200).body(usuarioService.listarTodos().stream()
+        List<Usuario> usuarios = usuarioService.listarTodos();
+
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(usuarios.stream()
                 .map(usuarioMapper::toResponseDto)
                 .toList());
     }
