@@ -1,4 +1,4 @@
-package autenticacao.teste.apiautenticacao.security;
+package autenticacao.teste.apiautenticacao.config;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
