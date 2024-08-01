@@ -3,10 +3,14 @@ Spring:
     Name: Api-de-Autenticacao
 
   Datasource:
-    Url: ${url_bd}
-    Username: ${user_bd}
-    Password: ${senha_bd}
+    Url: jdbc:mysql://localhost:3306/mydb
+    Username: admin
+    Password: 123
     Driver-class-name: com.mysql.cj.jdbc.Driver
+
+  Sql:
+    Init:
+      Mode: always
 
   Jpa:
     Properties:
