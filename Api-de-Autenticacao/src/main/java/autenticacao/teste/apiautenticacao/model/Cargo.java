@@ -7,18 +7,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "usuario")
-public class Usuario {
+@Table(name = "cargo")
+public class Cargo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
 
     @Column(unique = true)
-    private String email;
-    private String senha;
-
-    @ManyToOne
-    private Cargo cargo;
+    private String nome;
 }
