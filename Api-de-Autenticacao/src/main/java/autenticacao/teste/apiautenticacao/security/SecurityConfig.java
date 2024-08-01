@@ -21,7 +21,7 @@ public class SecurityConfig {
                     authorize
                             .anyRequest().authenticated();
                 })
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) // fazer isso somente em ambientes de teste
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
