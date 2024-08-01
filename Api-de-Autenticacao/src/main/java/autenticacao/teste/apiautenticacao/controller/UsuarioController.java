@@ -1,5 +1,6 @@
 package autenticacao.teste.apiautenticacao.controller;
 
+import autenticacao.teste.apiautenticacao.dto.LoginRequestDto;
 import autenticacao.teste.apiautenticacao.dto.UsuarioRequestDto;
 import autenticacao.teste.apiautenticacao.dto.UsuarioResponseDto;
 import autenticacao.teste.apiautenticacao.dto.mapper.UsuarioMapper;
@@ -44,16 +45,16 @@ public class UsuarioController {
                 .toList());
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<UsuarioResponseDto> login(@RequestParam String email, @RequestParam String senha) {
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioResponseDto> login(@RequestBody @Valid LoginRequestDto dto) {
 
-        Usuario usuario = usuarioService.buscarPorEmail(email);
+        Usuario usuario = usuarioService.buscarPorEmail(dto.getEmail());
 
         if (Objects.isNull(usuario)) {
             return ResponseEntity.status(404).build();
         }
 
-        boolean senhaValida = usuario.getSenha().equals(senha);
+        boolean senhaValida = usuario.getSenha().equals(dto.getSenha());
 
         if (!senhaValida) {
             return ResponseEntity.status(401).build();
