@@ -21,6 +21,13 @@ Spring:
     Hibernate:
       Ddl-auto: update
 
+Jwt:
+  Public:
+    Key: classpath:app.pub
+
+  Private:
+    Key: classpath:app.key
+
 Server:
   Error:
     Include-message: always
