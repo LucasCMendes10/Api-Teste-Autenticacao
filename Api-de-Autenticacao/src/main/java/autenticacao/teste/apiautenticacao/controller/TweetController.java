@@ -2,6 +2,7 @@ package autenticacao.teste.apiautenticacao.controller;
 
 import autenticacao.teste.apiautenticacao.dto.TweetRequestDto;
 import autenticacao.teste.apiautenticacao.dto.TweetResponseDto;
+import autenticacao.teste.apiautenticacao.model.Role;
 import autenticacao.teste.apiautenticacao.model.Tweet;
 import autenticacao.teste.apiautenticacao.model.User;
 import autenticacao.teste.apiautenticacao.repository.TweetRepository;
@@ -48,7 +49,12 @@ public class TweetController {
         Tweet tweet = tweetRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        if (!tweet.getUser().getUsername().equals(token.getName())) {
+        Optional<User> user = userRepository.findByUsername(token.getName());
+
+        boolean isAdmin = user.get().getRoles().stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase(Role.Values.ADMIN.name()));
+
+        if (!isAdmin && !tweet.getUser().getUsername().equals(token.getName())) {
             return ResponseEntity.status(403).build();
         }
 
