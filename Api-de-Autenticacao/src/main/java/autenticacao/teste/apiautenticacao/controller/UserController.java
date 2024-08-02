@@ -9,11 +9,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,5 +44,18 @@ public class UserController {
         userRepository.save(newUser);
 
         return ResponseEntity.status(201).build();
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('SCOPE_admin')") // o valor é por causa de como está escrito no jwt
+    public ResponseEntity<List<User>> findAll() {
+
+        List<User> users = userRepository.findAll();
+
+        if (users.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(users);
     }
 }
