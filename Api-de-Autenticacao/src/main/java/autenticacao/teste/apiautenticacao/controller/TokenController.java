@@ -32,7 +32,7 @@ public class TokenController {
 
         Optional<User> user = userRepository.findByUsername(dto.getUsername());
 
-        if (user.isEmpty() || user.get().isLoginCorrect(dto, bCryptPasswordEncoder)) {
+        if (user.isEmpty() || !user.get().isLoginCorrect(dto, bCryptPasswordEncoder)) {
             throw new BadCredentialsException("Usuário ou senha inválido!");
         }
         // A parte de cima autentica se o login está correto
