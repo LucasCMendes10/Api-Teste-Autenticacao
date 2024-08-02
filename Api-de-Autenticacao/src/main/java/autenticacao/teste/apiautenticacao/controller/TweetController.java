@@ -8,14 +8,14 @@ import autenticacao.teste.apiautenticacao.repository.TweetRepository;
 import autenticacao.teste.apiautenticacao.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/tweets")
@@ -40,5 +40,20 @@ public class TweetController {
         tweetRepository.save(tweet);
 
         return ResponseEntity.status(201).build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id, JwtAuthenticationToken token) {
+
+        Tweet tweet = tweetRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (!tweet.getUser().getUsername().equals(token.getName())) {
+            return ResponseEntity.status(403).build();
+        }
+
+        tweetRepository.deleteById(id);
+
+        return ResponseEntity.status(204).build();
     }
 }
