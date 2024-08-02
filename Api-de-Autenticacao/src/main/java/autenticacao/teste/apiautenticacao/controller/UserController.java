@@ -27,7 +27,7 @@ public class UserController {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-//    @Transactional
+    @Transactional
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid UserRequestDto dto) {
 
