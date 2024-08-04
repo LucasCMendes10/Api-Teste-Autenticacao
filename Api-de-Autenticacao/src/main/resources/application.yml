@@ -1,0 +1,34 @@
+Spring:
+  Application:
+    Name: Api-de-Autenticacao
+
+  Datasource:
+    Url: jdbc:mysql://localhost:3306/mydb
+    Username: admin
+    Password: 123
+    Driver-class-name: com.mysql.cj.jdbc.Driver
+
+  Sql:
+    Init:
+      Mode: always
+
+  Jpa:
+    Properties:
+      Hibernate:
+        Dialect: org.hibernate.dialect.MySQLDialect
+    Defer-datasource-initialization: true
+    Show-sql: true
+    Hibernate:
+      Ddl-auto: update
+
+Jwt:
+  Public:
+    Key: classpath:app.pub
+
+  Private:
+    Key: classpath:app.key
+
+Server:
+  Error:
+    Include-message: always
+    Include-binding-errors: always
