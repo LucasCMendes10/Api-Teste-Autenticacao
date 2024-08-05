@@ -1,11 +1,5 @@
 package autenticacao.teste.apiautenticacao.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import autenticacao.teste.apiautenticacao.model.Role;
 import autenticacao.teste.apiautenticacao.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +9,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
-public class RoleServiceTest {
+class RoleServiceTest {
 
     @Mock
     private RoleRepository roleRepository;
@@ -33,8 +31,8 @@ public class RoleServiceTest {
     @Test
     void testFindByName() {
 
-        Role role = mock(Role.class);
-        String name = role.getName();
+        var role = mock(Role.class);
+        var name = role.getName();
 
         when(roleRepository.findByName(name)).thenReturn(role);
 
