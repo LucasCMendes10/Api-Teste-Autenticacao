@@ -8,8 +8,8 @@ import autenticacao.teste.apiautenticacao.dto.mapper.TweetMapper;
 import autenticacao.teste.apiautenticacao.model.Role;
 import autenticacao.teste.apiautenticacao.model.Tweet;
 import autenticacao.teste.apiautenticacao.model.User;
-import autenticacao.teste.apiautenticacao.repository.TweetRepository;
-import autenticacao.teste.apiautenticacao.repository.UserRepository;
+import autenticacao.teste.apiautenticacao.service.TweetService;
+import autenticacao.teste.apiautenticacao.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,8 +28,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TweetController {
 
-    private final TweetRepository tweetRepository;
-    private final UserRepository userRepository;
+    private final TweetService tweetService;
+    private final UserService userService;
     private final TweetMapper tweetMapper;
 
     @PostMapping
@@ -38,24 +38,24 @@ public class TweetController {
             JwtAuthenticationToken token
     ) {
 
-        Optional<User> user = userRepository.findByUsername(token.getName());
+        Optional<User> user = userService.findByUsername(token.getName());
 
         Tweet tweet = new Tweet();
         tweet.setUser(user.get());
         tweet.setContent(dto.getContent());
 
-        tweetRepository.save(tweet);
+        Tweet tweetSaved = tweetService.save(tweet);
 
-        return ResponseEntity.status(201).body(tweetMapper.toResponseDto(tweet));
+        return ResponseEntity.status(201).body(tweetMapper.toResponseDto(tweetSaved));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, JwtAuthenticationToken token) {
 
-        Tweet tweet = tweetRepository.findById(id).orElseThrow(
+        Tweet tweet = tweetService.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        Optional<User> user = userRepository.findByUsername(token.getName());
+        Optional<User> user = userService.findByUsername(token.getName());
 
         boolean isAdmin = user.get().getRoles().stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase(Role.Values.ADMIN.name()));
@@ -64,7 +64,7 @@ public class TweetController {
             return ResponseEntity.status(403).build();
         }
 
-        tweetRepository.deleteById(id);
+        tweetService.deleteById(id);
 
         return ResponseEntity.status(204).build();
     }
@@ -75,7 +75,7 @@ public class TweetController {
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
     ) {
 
-        Page<FeedItemDto> tweets = tweetRepository.findAll(
+        Page<FeedItemDto> tweets = tweetService.findAllPage(
                 PageRequest.of(page, pageSize, Sort.Direction.DESC, "dtCriacao"))
                 .map(tweet -> new FeedItemDto(tweet.getId(), tweet.getContent(), tweet.getUser().getUsername()));
 
