@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
