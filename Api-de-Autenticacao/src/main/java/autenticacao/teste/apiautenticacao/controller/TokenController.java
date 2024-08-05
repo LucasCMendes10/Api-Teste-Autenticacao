@@ -5,6 +5,7 @@ import autenticacao.teste.apiautenticacao.dto.LoginResponseDto;
 import autenticacao.teste.apiautenticacao.model.Role;
 import autenticacao.teste.apiautenticacao.model.User;
 import autenticacao.teste.apiautenticacao.repository.UserRepository;
+import autenticacao.teste.apiautenticacao.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +27,13 @@ import java.util.stream.Collectors;
 public class TokenController {
 
     private final JwtEncoder jwtEncoder;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto dto) {
 
-        Optional<User> user = userRepository.findByUsername(dto.getUsername());
+        Optional<User> user = userService.findByUsername(dto.getUsername());
 
         if (user.isEmpty() || !user.get().isLoginCorrect(dto, bCryptPasswordEncoder)) {
             return ResponseEntity.status(401).build();
