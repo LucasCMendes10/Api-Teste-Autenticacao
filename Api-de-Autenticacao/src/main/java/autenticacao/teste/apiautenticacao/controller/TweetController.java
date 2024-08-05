@@ -3,6 +3,8 @@ package autenticacao.teste.apiautenticacao.controller;
 import autenticacao.teste.apiautenticacao.dto.FeedItemDto;
 import autenticacao.teste.apiautenticacao.dto.FeedResponseDto;
 import autenticacao.teste.apiautenticacao.dto.TweetRequestDto;
+import autenticacao.teste.apiautenticacao.dto.TweetResponseDto;
+import autenticacao.teste.apiautenticacao.dto.mapper.TweetMapper;
 import autenticacao.teste.apiautenticacao.model.Role;
 import autenticacao.teste.apiautenticacao.model.Tweet;
 import autenticacao.teste.apiautenticacao.model.User;
@@ -28,9 +30,10 @@ public class TweetController {
 
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
+    private final TweetMapper tweetMapper;
 
     @PostMapping
-    public ResponseEntity<Void> save(
+    public ResponseEntity<TweetResponseDto> save(
             @RequestBody @Valid TweetRequestDto dto,
             JwtAuthenticationToken token
     ) {
@@ -43,7 +46,7 @@ public class TweetController {
 
         tweetRepository.save(tweet);
 
-        return ResponseEntity.status(201).build();
+        return ResponseEntity.status(201).body(tweetMapper.toResponseDto(tweet));
     }
 
     @DeleteMapping("/{id}")

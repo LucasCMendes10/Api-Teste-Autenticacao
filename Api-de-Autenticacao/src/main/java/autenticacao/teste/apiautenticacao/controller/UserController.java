@@ -1,6 +1,8 @@
 package autenticacao.teste.apiautenticacao.controller;
 
 import autenticacao.teste.apiautenticacao.dto.UserRequestDto;
+import autenticacao.teste.apiautenticacao.dto.UserResponseDto;
+import autenticacao.teste.apiautenticacao.dto.mapper.UserMapper;
 import autenticacao.teste.apiautenticacao.model.Role;
 import autenticacao.teste.apiautenticacao.model.User;
 import autenticacao.teste.apiautenticacao.repository.RoleRepository;
@@ -24,10 +26,11 @@ public class UserController {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserMapper userMapper;
 
     @Transactional
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> save(@RequestBody @Valid UserRequestDto dto) {
 
         Role basicRole = roleRepository.findByName(Role.Values.BASIC.name());
         Optional<User> userDb = userRepository.findByUsername(dto.getUsername());
@@ -43,12 +46,12 @@ public class UserController {
 
         userRepository.save(newUser);
 
-        return ResponseEntity.status(201).build();
+        return ResponseEntity.status(201).body(userMapper.toResponseDto(newUser));
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_admin')") // o valor é por causa de como está escrito no jwt
-    public ResponseEntity<List<User>> findAll() {
+    public ResponseEntity<List<UserResponseDto>> findAll() {
 
         List<User> users = userRepository.findAll();
 
@@ -56,6 +59,8 @@ public class UserController {
             return ResponseEntity.status(204).build();
         }
 
-        return ResponseEntity.status(200).body(users);
+        return ResponseEntity.status(200).body(users.stream()
+                .map(userMapper::toResponseDto)
+                .toList());
     }
 }
