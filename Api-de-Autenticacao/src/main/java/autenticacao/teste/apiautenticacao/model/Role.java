@@ -1,13 +1,13 @@
 package autenticacao.teste.apiautenticacao.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @Entity
 @Table(name = "role")
 public class Role {
