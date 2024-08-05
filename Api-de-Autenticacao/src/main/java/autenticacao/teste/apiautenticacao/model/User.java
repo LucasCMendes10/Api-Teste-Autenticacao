@@ -2,6 +2,7 @@ package autenticacao.teste.apiautenticacao.model;
 
 import autenticacao.teste.apiautenticacao.dto.LoginRequestDto;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "user")
 public class User {
