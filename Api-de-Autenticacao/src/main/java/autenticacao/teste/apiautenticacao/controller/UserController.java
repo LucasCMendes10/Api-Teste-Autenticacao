@@ -6,8 +6,8 @@ import autenticacao.teste.apiautenticacao.dto.mapper.UserMapper;
 import autenticacao.teste.apiautenticacao.model.Role;
 import autenticacao.teste.apiautenticacao.model.User;
 import autenticacao.teste.apiautenticacao.repository.RoleRepository;
-import autenticacao.teste.apiautenticacao.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import autenticacao.teste.apiautenticacao.service.RoleService;
+import autenticacao.teste.apiautenticacao.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +23,16 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final UserService userService;
+    private final RoleService roleService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapper;
 
-    @Transactional
     @PostMapping
     public ResponseEntity<UserResponseDto> save(@RequestBody @Valid UserRequestDto dto) {
 
-        Role basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-        Optional<User> userDb = userRepository.findByUsername(dto.getUsername());
+        Role basicRole = roleService.findByName(Role.Values.BASIC.name());
+        Optional<User> userDb = userService.findByUsername(dto.getUsername());
 
         if (userDb.isPresent()) {
             return ResponseEntity.status(422).build();
@@ -44,16 +43,16 @@ public class UserController {
         newUser.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         newUser.setRoles(List.of(basicRole));
 
-        userRepository.save(newUser);
+        User userSaved = userService.save(newUser);
 
-        return ResponseEntity.status(201).body(userMapper.toResponseDto(newUser));
+        return ResponseEntity.status(201).body(userMapper.toResponseDto(userSaved));
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_admin')") // o valor é por causa de como está escrito no jwt
     public ResponseEntity<List<UserResponseDto>> findAll() {
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.findAll();
 
         if (users.isEmpty()) {
             return ResponseEntity.status(204).build();
