@@ -1,5 +1,6 @@
 package autenticacao.teste.apiautenticacao.service;
 
+import autenticacao.teste.apiautenticacao.exception.notfound.TweetNotFoundException;
 import autenticacao.teste.apiautenticacao.model.Tweet;
 import autenticacao.teste.apiautenticacao.repository.TweetRepository;
 import jakarta.transaction.Transactional;
@@ -30,6 +31,11 @@ public class TweetService {
     }
 
     public void deleteById(Long id) {
+
+        if (!tweetRepository.existsById(id)) {
+            throw new TweetNotFoundException();
+        }
+
         tweetRepository.deleteById(id);
     }
 }
